@@ -1,0 +1,3 @@
+source_record_id,source_patient_id,test_code,test_name,specimen_collected_at,status
+LIS-DEMO-004,LIS-DEMO-001,SIM-GLU,Synthetic glucose order,2026-11-21T07:30:00Z,final
+LIS-DEMO-005,SAMPLE-UNMAPPED-ID,SIM-URI,Synthetic urine order,2026-11-21T07:45:00Z,final

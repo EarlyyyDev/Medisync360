@@ -1,0 +1,21 @@
+source_record_id,source_patient_id,test_code,test_name,specimen_collected_at,status
+LIS-DEMO-002,LIS-DEMO-001,SIM-CBC,Synthetic complete blood count,2026-11-20T08:10:00Z,final
+LIS-ORDER-P002,LIS-DEMO-P002,SIM-MET,Synthetic metabolic panel,2026-11-20T08:20:00Z,final
+LIS-ORDER-P003,LIS-DEMO-P003,SIM-LIPID,Synthetic lipid panel,2026-11-20T08:30:00Z,final
+LIS-ORDER-P004,LIS-DEMO-P004,SIM-UA,Synthetic urinalysis,2026-11-20T08:40:00Z,processing
+LIS-ORDER-P005,LIS-DEMO-P005,SIM-CBC,Synthetic complete blood count,2026-11-20T08:50:00Z,final
+LIS-ORDER-P006,LIS-DEMO-P006,SIM-MET,Synthetic metabolic panel,2026-11-20T09:00:00Z,final
+LIS-ORDER-P007,LIS-DEMO-P007,SIM-LIPID,Synthetic lipid panel,2026-11-20T09:10:00Z,processing
+LIS-ORDER-P008,LIS-DEMO-P008,SIM-UA,Synthetic urinalysis,2026-11-20T09:20:00Z,final
+LIS-ORDER-P009,LIS-DEMO-P009,SIM-CBC,Synthetic complete blood count,2026-11-20T09:30:00Z,final
+LIS-ORDER-P010,LIS-DEMO-P010,SIM-MET,Synthetic metabolic panel,2026-11-20T09:40:00Z,processing
+LIS-ORDER-P011,LIS-DEMO-P011,SIM-LIPID,Synthetic lipid panel,2026-11-21T08:00:00Z,ordered
+LIS-ORDER-P012,LIS-DEMO-P012,SIM-UA,Synthetic urinalysis,2026-11-21T08:10:00Z,ordered
+LIS-ORDER-P013,LIS-DEMO-P013,SIM-CBC,Synthetic complete blood count,2026-11-21T08:20:00Z,ordered
+LIS-ORDER-P014,LIS-DEMO-P014,SIM-MET,Synthetic metabolic panel,2026-11-21T08:30:00Z,ordered
+LIS-ORDER-P015,LIS-DEMO-P015,SIM-LIPID,Synthetic lipid panel,2026-11-21T08:40:00Z,ordered
+LIS-ORDER-P016,LIS-DEMO-P016,SIM-UA,Synthetic urinalysis,2026-11-21T08:50:00Z,ordered
+LIS-ORDER-P017,LIS-DEMO-P017,SIM-CBC,Synthetic complete blood count,2026-11-21T09:00:00Z,ordered
+LIS-ORDER-P018,LIS-DEMO-P018,SIM-MET,Synthetic metabolic panel,2026-11-21T09:10:00Z,ordered
+LIS-ORDER-P019,LIS-DEMO-P019,SIM-LIPID,Synthetic lipid panel,2026-11-21T09:20:00Z,ordered
+LIS-ORDER-P020,LIS-DEMO-P020,SIM-UA,Synthetic urinalysis,2026-11-21T09:30:00Z,ordered
