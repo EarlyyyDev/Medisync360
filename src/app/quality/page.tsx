@@ -9,6 +9,16 @@ interface Issue {
   severity: string;
   status: string;
   createdAt: string;
+  sourceSystemName: string | null;
+  batchFileName: string | null;
+  batchId: string | null;
+  details: {
+    reason?: string;
+    recommendedAction?: string;
+    rowNumber?: string;
+    sourceRecordId?: string | null;
+    sourcePatientId?: string | null;
+  } | null;
 }
 
 export default function QualityPage() {
@@ -69,7 +79,9 @@ export default function QualityPage() {
         <div>
           <p className="eyebrow">Data quality</p>
           <h1>Reconciliation review</h1>
-          <p className="purpose">Review synthetic duplicate, conflict, and mapping issues.</p>
+          <p className="purpose">
+            Review open import issues across batches. Correct source data or patient mappings, then resolve the issue.
+          </p>
         </div>
       </section>
       {message ? <p className="success-message" role="status">{message}</p> : null}
@@ -78,13 +90,38 @@ export default function QualityPage() {
       ) : (
         <div className="table-wrap">
           <table>
-            <thead><tr><th>Issue</th><th>Severity</th><th>Status</th><th>Created</th><th>Action</th></tr></thead>
+            <thead><tr><th>Issue</th><th>Import context</th><th>Severity</th><th>Created</th><th>Action</th></tr></thead>
             <tbody>
               {issues.map((issue) => (
                 <tr key={issue.id}>
-                  <td>{issue.issueType}</td>
+                  <td>
+                    <div className="quality-issue-details">
+                      <strong>{issue.issueType.replaceAll("_", " ")}</strong>
+                      {issue.details?.reason ? <span>{issue.details.reason}</span> : null}
+                      {issue.details?.recommendedAction ? (
+                        <span className="quality-recommendation">
+                          Next step: {issue.details.recommendedAction}
+                        </span>
+                      ) : null}
+                    </div>
+                  </td>
+                  <td>
+                    <div className="quality-import-context">
+                      <strong>{issue.sourceSystemName ?? "Unknown source"}</strong>
+                      {issue.batchFileName ? <span>{issue.batchFileName}</span> : null}
+                      {!issue.batchFileName && issue.batchId ? (
+                        <span>Batch {issue.batchId.slice(0, 8)}</span>
+                      ) : null}
+                      {issue.details?.rowNumber ? <span>Row {issue.details.rowNumber}</span> : null}
+                      {issue.details?.sourcePatientId ? (
+                        <span>Source patient ID: {issue.details.sourcePatientId}</span>
+                      ) : null}
+                      {issue.details?.sourceRecordId ? (
+                        <span>Source record ID: {issue.details.sourceRecordId}</span>
+                      ) : null}
+                    </div>
+                  </td>
                   <td>{issue.severity}</td>
-                  <td>{issue.status}</td>
                   <td>{new Date(issue.createdAt).toLocaleString()}</td>
                   <td>
                     {issue.status === "open" ? (

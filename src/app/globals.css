@@ -490,6 +490,34 @@ a { color: inherit; }
   padding: 20px;
   background: rgba(16, 31, 47, .48);
 }
+.history-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--border);
+}
+.history-pagination p { margin: 0; color: var(--muted); font-size: 12px; }
+.history-pagination-controls { display: flex; align-items: center; gap: 10px; }
+.history-pagination-controls span { color: var(--muted); font-size: 12px; white-space: nowrap; }
+.table-wrap .history-pagination-controls button {
+  min-height: 34px;
+  padding: 0 11px;
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--ink);
+  font-size: 12px;
+}
+.table-wrap .history-pagination-controls button:not(:disabled):hover { background: #f3f6f9; }
+.table-wrap .history-pagination-controls button:disabled { cursor: not-allowed; opacity: .58; }
+.table-wrap .history-pagination-controls button:focus-visible {
+  outline: 3px solid rgba(8,125,122,.3);
+  outline-offset: 2px;
+}
+
 .confirm-dialog {
   width: min(460px, 100%);
   padding: 22px;
@@ -526,6 +554,10 @@ a { color: inherit; }
 }
 .patient-summary span { color: var(--muted); font-size: 11px; }
 .patient-summary strong { font-size: 14px; }
+.quality-issue-details, .quality-import-context { display: grid; gap: 4px; min-width: 180px; }
+.quality-issue-details strong, .quality-import-context strong { color: var(--ink); font-size: 12px; text-transform: capitalize; }
+.quality-issue-details span, .quality-import-context span { color: var(--muted); font-size: 12px; overflow-wrap: anywhere; }
+.quality-issue-details .quality-recommendation { color: #176260; }
 .settings-card {
   max-width: 680px;
   padding: 22px;
@@ -627,6 +659,8 @@ a { color: inherit; }
   .integration-guide { align-items: flex-start; flex-direction: column; }
   .integration-guide a { width: 100%; justify-content: center; }
   .table-wrap th, .table-wrap td { padding: 11px 12px; }
+  .history-pagination { align-items: flex-start; }
+  .history-pagination-controls { width: 100%; justify-content: space-between; }
   .import-preview { padding: 16px; }
   .preview-heading, .preview-row-heading { align-items: flex-start; }
   .preview-summary { grid-template-columns: 1fr; }

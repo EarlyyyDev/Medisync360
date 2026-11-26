@@ -12,6 +12,12 @@ interface Batch {
   rejectedRows: string;
 }
 
+interface BatchPagination {
+  page: number;
+  pageSize: number;
+  total: number;
+}
+
 interface PreviewRow {
   rowNumber: string;
   status: string;
@@ -34,6 +40,12 @@ function isSuccessfulStatus(status: string) {
 
 export default function IntegrationsPage() {
   const [batches, setBatches] = useState<Batch[]>([]);
+  const [pagination, setPagination] = useState<BatchPagination>({
+    page: 1,
+    pageSize: 10,
+    total: 0,
+  });
+  const [historyLoading, setHistoryLoading] = useState(true);
   const [preview, setPreview] = useState<BatchPreview | null>(null);
   const [sourceCode, setSourceCode] = useState("SIM_EMR");
   const [file, setFile] = useState<File | null>(null);
@@ -50,22 +62,34 @@ export default function IntegrationsPage() {
     sourceCode === "SIM_LIS" ? "lis" :
     sourceCode === "SIM_BILLING" ? "billing" : "insurance";
 
-  const loadBatches = useCallback(async () => {
-    const response = await fetch(`${apiUrl}/api/v1/integrations/batches`, {
-      credentials: "include",
-    });
-    if (!response.ok) {
-      const body = (await response.json()) as { error?: { message?: string } };
-      throw new Error(body.error?.message ?? "Unable to load integration batches.");
+  const loadBatches = useCallback(async (page: number) => {
+    setHistoryLoading(true);
+    try {
+      const response = await fetch(
+        `${apiUrl}/api/v1/integrations/batches?page=${page}&pageSize=${pagination.pageSize}`,
+        { credentials: "include" },
+      );
+      if (!response.ok) {
+        const body = (await response.json()) as { error?: { message?: string } };
+        throw new Error(body.error?.message ?? "Unable to load integration batches.");
+      }
+      const body = (await response.json()) as {
+        data?: { items?: Batch[]; pagination?: BatchPagination };
+      };
+      if (!body.data || !Array.isArray(body.data.items) || !body.data.pagination) {
+        throw new Error("Import history response was incomplete.");
+      }
+      setBatches(body.data.items);
+      setPagination(body.data.pagination);
+    } finally {
+      setHistoryLoading(false);
     }
-    const body = (await response.json()) as { data: Batch[] };
-    setBatches(body.data);
-  }, [apiUrl]);
+  }, [apiUrl, pagination.pageSize]);
 
   useEffect(() => {
     void (async () => {
       try {
-        await loadBatches();
+        await loadBatches(1);
       } catch (reason: unknown) {
         setError(reason instanceof Error ? reason.message : "Unable to load imports.");
       }
@@ -101,7 +125,7 @@ export default function IntegrationsPage() {
       setMessage(
         `Batch ${body.data?.batchId} validated: ${body.data?.acceptedRows ?? 0} accepted, ${body.data?.rejectedRows ?? 0} rejected.`,
       );
-      await loadBatches();
+      await loadBatches(1);
       if (body.data?.batchId) await review(body.data.batchId);
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "Upload failed.");
@@ -161,13 +185,33 @@ export default function IntegrationsPage() {
       );
       setConfirmBatch(null);
       setPreview(null);
-      await loadBatches();
+      await loadBatches(pagination.page);
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "Confirmation failed.");
     } finally {
       setProcessing(false);
     }
   }
+
+  async function goToHistoryPage(page: number) {
+    setError("");
+    try {
+      await loadBatches(page);
+    } catch (reason: unknown) {
+      setError(reason instanceof Error ? reason.message : "Unable to load import history.");
+    }
+  }
+
+  const totalHistoryPages = Math.max(
+    1,
+    Math.ceil(pagination.total / pagination.pageSize),
+  );
+  const firstHistoryItem =
+    pagination.total === 0 ? 0 : (pagination.page - 1) * pagination.pageSize + 1;
+  const lastHistoryItem = Math.min(
+    pagination.page * pagination.pageSize,
+    pagination.total,
+  );
 
   return (
     <main className="shell">
@@ -221,7 +265,9 @@ export default function IntegrationsPage() {
 
       <section className="table-wrap" aria-labelledby="batches-title">
         <h2 id="batches-title" className="table-title">Import history</h2>
-        {batches.length === 0 ? (
+        {historyLoading && batches.length === 0 ? (
+          <p className="table-state" role="status">Loading import history...</p>
+        ) : batches.length === 0 ? (
           <p className="table-state">No import batches found.</p>
         ) : (
           <table>
@@ -266,6 +312,33 @@ export default function IntegrationsPage() {
             </tbody>
           </table>
         )}
+        {pagination.total > 0 ? (
+          <nav className="history-pagination" aria-label="Import history pages">
+            <p>
+              Showing {firstHistoryItem}–{lastHistoryItem} of {pagination.total} import batches
+              {historyLoading ? " · Updating..." : ""}
+            </p>
+            <div className="history-pagination-controls">
+              <button
+                type="button"
+                disabled={historyLoading || pagination.page <= 1}
+                onClick={() => void goToHistoryPage(pagination.page - 1)}
+              >
+                Previous
+              </button>
+              <span aria-live="polite">
+                Page {pagination.page} of {totalHistoryPages}
+              </span>
+              <button
+                type="button"
+                disabled={historyLoading || pagination.page >= totalHistoryPages}
+                onClick={() => void goToHistoryPage(pagination.page + 1)}
+              >
+                Next
+              </button>
+            </div>
+          </nav>
+        ) : null}
       </section>
 
       {preview ? (
