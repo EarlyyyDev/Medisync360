@@ -5,6 +5,13 @@ import { createApp } from "./app.js";
 describe("API foundation", () => {
   const app = createApp();
 
+  it("reports API status at the root path", async () => {
+    const response = await request(app).get("/");
+
+    expect(response.status).toBe(200);
+    expect(response.body.data.service).toBe("medisync360-api");
+  });
+
   it("reports liveness", async () => {
     const response = await request(app).get("/api/v1/health/live");
 

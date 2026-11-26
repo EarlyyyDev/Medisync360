@@ -58,6 +58,16 @@ export function createApp() {
   app.use(requestContext);
   app.use(authenticateRequest);
 
+  app.get("/", (_request, response) => {
+    response.json({
+      success: true,
+      data: {
+        service: "medisync360-api",
+        health: "/health/live",
+      },
+    });
+  });
+
   app.use(
     "/api/v1/auth",
     rateLimit({
